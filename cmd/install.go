@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/humoyun-dev/pgcli/internal/sys"
+	"github.com/humoyun-dev/pgtool/internal/sys"
 	"github.com/spf13/cobra"
 )
 

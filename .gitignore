@@ -3,8 +3,8 @@
 # =========================
 
 # Binary’lar
-pgcli
-pgcli.exe
+pgtool
+pgtool.exe
 *.exe
 *.dll
 *.so

@@ -1,6 +1,6 @@
-module github.com/humoyun-dev/pgcli
+module github.com/humoyun-dev/pgtool
 
-go 1.25.4
+go 1.22
 
 require github.com/spf13/cobra v1.10.1
 

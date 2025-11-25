@@ -7,7 +7,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "pgcli",
+	Use:   "pgtool",
 	Short: "PostgreSQL o'rnatish va boshqarish uchun CLI",
 }
 
