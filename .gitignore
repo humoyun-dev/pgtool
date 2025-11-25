@@ -1,0 +1,79 @@
+# =========================
+# Go build artifacts
+# =========================
+
+# Binary’lar
+pgcli
+pgcli.exe
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary’lar
+*.test
+
+# Go tool’lar chiqindilari
+*.out
+
+# Coverage fayllar
+coverage.out
+*.coverprofile
+
+# =========================
+# Build / cache papkalar
+# =========================
+
+bin/
+dist/
+out/
+.tmp/
+.cache/
+
+# Agar module ichida oldin `go build -o something` qilgan bo'lsang:
+*.log
+
+# =========================
+# OS / Editor / IDE chiqindilari
+# =========================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code
+.vscode/
+
+# Goland / IntelliJ
+.idea/
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+
+# =========================
+# Config / secret / lokal fayllar
+# =========================
+
+.env
+.env.*
+*.local
+*.secret
+*.tmp
+
+# Docker / dev ops
+docker-compose.override.yml
+
+# =========================
+# Git / tools metadata
+# =========================
+
+# Go mod cache emas, bularni commit qilasan:
+# go.mod
+# go.sum
+
+# Agar vendor ishlatmasang va `go mod vendor` qilmasang:
+# /vendor/
+
