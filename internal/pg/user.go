@@ -65,5 +65,27 @@ func DeleteUser(username string) error {
 }
 
 func ListUsers() error {
-	return runPsql("-c", `\du`)
+	return runPsql("-d", defaultMetaDB(), "-c", `\du`)
+}
+
+// ListRoleNames returns non-system role names for selection prompts.
+func ListRoleNames() ([]string, error) {
+	out, err := runPsqlOutput("-d", defaultMetaDB(), "-Atc", "SELECT rolname FROM pg_roles WHERE rolname NOT LIKE 'pg_%' ORDER BY rolname;")
+	if err != nil {
+		if out != "" {
+			return nil, fmt.Errorf("%w: %s", err, out)
+		}
+		return nil, err
+	}
+
+	lines := strings.Split(out, "\n")
+	var roles []string
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		roles = append(roles, line)
+	}
+	return roles, nil
 }

@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/humoyun-dev/pgtool/internal/sys"
+	"github.com/humoyun-dev/pgtool/internal/ui"
 	"github.com/spf13/cobra"
 )
 
@@ -11,6 +13,20 @@ var uninstallCmd = &cobra.Command{
 	Use:   "uninstall",
 	Short: "PostgreSQL ni o'chirish (data ketishi mumkin)",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if ui.IsTerminal() {
+			fmt.Println("=== Uninstall PostgreSQL ===")
+			fmt.Println()
+			ans, err := ui.Prompt("This may remove PostgreSQL and its data. Continue? [yes/no]: ")
+			if err != nil {
+				return err
+			}
+			if strings.ToLower(strings.TrimSpace(ans)) != "yes" {
+				fmt.Println("Cancelled.")
+				return nil
+			}
+			fmt.Println()
+		}
+
 		osName := sys.DetectOS()
 		fmt.Println("Aniqlangan OS:", osName)
 
