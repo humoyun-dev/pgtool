@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/humoyun-dev/pgtool/internal/pg"
@@ -16,7 +15,7 @@ var (
 	createUserPerm string
 )
 
-const defaultPerms = "LOGIN CREATEDB"
+const defaultPerms = "CREATEDB"
 
 func choosePermissions(current string, interactive bool) (string, error) {
 	if current != "" {
@@ -33,45 +32,46 @@ func choosePermissions(current string, interactive bool) (string, error) {
 		value string
 	}{
 		{"NONE", ""},
-		{"LOGIN", "LOGIN"},
+		{"LOGIN", ""},
 		{"CREATEDB", "CREATEDB"},
 		{"CREATEROLE", "CREATEROLE"},
 		{"REPLICATION", "REPLICATION"},
 		{"SUPERUSER", "SUPERUSER"},
-		{"LOGIN + CREATEDB", "LOGIN CREATEDB"},
-		{"LOGIN + CREATEDB + CREATEROLE", "LOGIN CREATEDB CREATEROLE"},
+		{"LOGIN + CREATEDB", "CREATEDB"},
+		{"LOGIN + CREATEDB + CREATEROLE", "CREATEDB CREATEROLE"},
 		{"Custom (enter manually)", ""},
 	}
 
 	fmt.Println("=== Permissions ===")
-	for i, opt := range options {
-		fmt.Printf("  %d) %s\n", i+1, opt.label)
+	labels := make([]string, 0, len(options))
+	for _, opt := range options {
+		labels = append(labels, opt.label)
 	}
-	fmt.Print("Select an option [number, empty = 7]: ")
 
-	choiceRaw, err := ui.Prompt("")
+	choice, err := ui.SelectOneOrSkip("Select permissions", labels, "LOGIN + CREATEDB")
 	if err != nil {
-		return "", err
-	}
-	choiceRaw = strings.TrimSpace(choiceRaw)
-	if choiceRaw == "" {
-		choiceRaw = "7"
-	}
-
-	choice, err := strconv.Atoi(choiceRaw)
-	if err != nil || choice < 1 || choice > len(options) {
 		return "", fmt.Errorf("Error: invalid permissions selection.")
 	}
 
-	if choice == len(options) {
-		custom, err := ui.Prompt("Enter custom permissions (raw SQL fragment, e.g. 'LOGIN CREATEDB'): ")
-		if err != nil {
-			return "", err
-		}
-		return strings.TrimSpace(custom), nil
+	choice = strings.TrimSpace(choice)
+	if choice == "" {
+		choice = "LOGIN + CREATEDB"
 	}
 
-	return options[choice-1].value, nil
+	for _, opt := range options {
+		if strings.EqualFold(choice, opt.label) {
+			if opt.label == "Custom (enter manually)" {
+				custom, err := ui.Prompt("Enter custom permissions (raw SQL fragment, e.g. 'LOGIN CREATEDB'): ")
+				if err != nil {
+					return "", err
+				}
+				return strings.TrimSpace(custom), nil
+			}
+			return opt.value, nil
+		}
+	}
+
+	return defaultPerms, nil
 }
 
 var createUserCmd = &cobra.Command{

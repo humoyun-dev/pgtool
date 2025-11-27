@@ -19,19 +19,19 @@ var installCmd = &cobra.Command{
 			if !sys.CommandExists("brew") {
 				return fmt.Errorf("Homebrew topilmadi, avval uni o'rnat")
 			}
-			if err := sys.RunCmd("brew", "install", "postgresql@16"); err != nil {
+			if err := sys.RunCommand("brew install postgresql@16", "brew", "install", "postgresql@16"); err != nil {
 				return err
 			}
-			return sys.RunCmd("brew", "services", "start", "postgresql@16")
+			return sys.RunCommand("brew services start postgresql@16", "brew", "services", "start", "postgresql@16")
 
 		case "debian":
-			if err := sys.RunCmd("sudo", "apt", "update"); err != nil {
+			if err := sys.RunCommand("apt update", "sudo", "apt", "update"); err != nil {
 				return err
 			}
-			if err := sys.RunCmd("sudo", "apt", "install", "-y", "postgresql", "postgresql-contrib"); err != nil {
+			if err := sys.RunCommand("apt install postgresql", "sudo", "apt", "install", "-y", "postgresql", "postgresql-contrib"); err != nil {
 				return err
 			}
-			return sys.RunCmd("sudo", "systemctl", "enable", "--now", "postgresql")
+			return sys.RunCommand("enable postgresql service", "sudo", "systemctl", "enable", "--now", "postgresql")
 
 		default:
 			return fmt.Errorf("bu OS uchun avtomatik install yo'q, qo'lda o'rnat")

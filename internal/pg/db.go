@@ -14,7 +14,7 @@ func DeleteDB(name string) error {
 }
 
 func ListDBs() error {
-	return runPsql("-d", defaultMetaDB(), "-c", `\l`)
+	return runPsql("-c", `\l`)
 }
 
 func CreateUserAndDB(username, password, perms, dbName string) error {
@@ -26,7 +26,7 @@ func CreateUserAndDB(username, password, perms, dbName string) error {
 
 // ListDatabaseNames returns non-template database names for selection prompts.
 func ListDatabaseNames() ([]string, error) {
-	out, err := runPsqlOutput("-d", defaultMetaDB(), "-Atc", "SELECT datname FROM pg_database WHERE datistemplate = false ORDER BY datname;")
+	out, err := runPsqlOutput("-Atc", "SELECT datname FROM pg_database WHERE datistemplate = false ORDER BY datname;")
 	if err != nil {
 		if out != "" {
 			return nil, fmt.Errorf("%w: %s", err, out)

@@ -61,7 +61,21 @@ var createUserDbCmd = &cobra.Command{
 		if cudUser == "" || cudPass == "" || cudDb == "" {
 			return fmt.Errorf("Error: username, password and database name are required: --username --password --db (or interactive input).")
 		}
-		return pg.CreateUserAndDB(cudUser, cudPass, cudPerm, cudDb)
+		if err := pg.CreateUserAndDB(cudUser, cudPass, cudPerm, cudDb); err != nil {
+			return err
+		}
+
+		conn := pg.BuildConnInfo(cudUser, cudPass, cudDb)
+		fmt.Println()
+		fmt.Println("=== Connection Info ===")
+		fmt.Println()
+		fmt.Println("FastAPI / SQLAlchemy DSN:")
+		fmt.Printf("  %s\n", conn.FastAPIDSN())
+		fmt.Println()
+		fmt.Println("Django settings:")
+		fmt.Println(conn.DjangoConfig())
+
+		return nil
 	},
 }
 
